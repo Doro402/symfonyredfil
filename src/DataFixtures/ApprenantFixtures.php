@@ -24,12 +24,13 @@ class ApprenantFixtures extends Fixture implements DependentFixtureInterface
             $apprenant->setProfil($profil);
             $apprenant->setUsername(strtolower($profil->getLibelle()) . $i);
             //Génération des Users
-            $password = $this->encoder->encodePassword($apprenant, 'password');
+            $password = $this->encoder->encodePassword($apprenant, '1234');
             $apprenant->setPassword($password);
-           
+            $manager->persist($apprenant);
 
-            $manager->flush();
+            
         }
+        $manager->flush();
     }
     public function getDependencies(){
         return array(

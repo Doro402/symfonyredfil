@@ -24,12 +24,14 @@ class CmFixtures extends Fixture implements DependentFixtureInterface
             $cm ->setProfil($profil);
             $cm ->setUsername(strtolower($profil->getLibelle()) . $i);
             //Génération des Users
-            $password = 'password';
+            $password = $this->encoder->encodePassword($cm,"1234");
             $cm ->setPassword($password);
+            $manager->persist($cm);
             
 
-            $manager->flush();
+           
         }
+        $manager->flush();
     }
     public function getDependencies(){
         return array(

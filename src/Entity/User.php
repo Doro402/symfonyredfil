@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -14,7 +15,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
  * @ORM\DiscriminatorMap({"user" = "User", "formateur" = "Formateur", "cm" = "CM" , "apprenant"="Apprenant" , "admin"= "Admin"})
 
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id
@@ -26,7 +27,12 @@ class User
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Username;
+    private $username;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles =[];
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -43,21 +49,48 @@ class User
         return $this->id;
     }
 
-    public function getUsername(): ?string
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUsername(): string
     {
-        return $this->Username;
+        return (string) $this->username;
     }
 
-    public function setUsername(string $Username): self
+    public function setUsername(string $username): self
     {
-        $this->Username = $Username;
+        $this->username = $username;
 
         return $this;
     }
 
-    public function getPassword(): ?string
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
     {
-        return $this->password;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_' . strtoupper($this->profil->getLibelle());
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
+    {
+        return (string) $this->password;
     }
 
     public function setPassword(string $password): self
@@ -66,6 +99,27 @@ class User
 
         return $this;
     }
+
+    /**
+     * @see UserInterface
+     */
+    public function getSalt()
+    {
+        // not needed when using the "bcrypt" algorithm in security.yaml
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    
+
+
 
     public function getProfil(): ?Profil
     {

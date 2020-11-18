@@ -24,12 +24,14 @@ class FormateurFixtures extends Fixture implements DependentFixtureInterface
             $formateur->setProfil($profil);
             $formateur->setUsername(strtolower($profil->getLibelle()) . $i);
             //Génération des Users
-            $password = $this->encoder->encodePassword($formateur, 'password');
+            $password = $this->encoder->encodePassword($formateur, '1234');
             $formateur->setPassword($password);
+            $manager->persist($formateur);
            
 
-            $manager->flush();
+            
         }
+        $manager->flush();
     }
     public function getDependencies(){
         return array(

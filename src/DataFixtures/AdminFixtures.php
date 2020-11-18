@@ -25,7 +25,7 @@ class AdminFixtures extends Fixture implements DependentFixtureInterface
             $admin->setProfil($profil);
             $admin->setUsername(strtolower($profil->getLibelle()) . $i);
             //Génération des Users
-            $password = 'password';
+            $password = $this->encoder->encodePassword($admin,"1234");
             $admin->setPassword($password);
            
             
