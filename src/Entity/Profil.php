@@ -2,15 +2,24 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\ProfilRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProfilRepository;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
+ * @ApiResource(
+ *      routePrefix="/admin",
+ *      collectionOperations={
+ *             "get_profils"={
+ *                  "method"="GET",
+ *                  "path"="/profils"
+ *              },
+ *      }
+ * )
  */
 class Profil
 {
@@ -28,6 +37,7 @@ class Profil
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="profil")
+     * @ApiSubresource()
      */
     private $yes;
 

@@ -22,10 +22,6 @@ class CM extends User
     
 
    
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     
 
