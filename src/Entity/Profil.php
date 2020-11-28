@@ -4,23 +4,44 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProfilRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+
 
 /**
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
+ * @ApiFilter(BooleanFilter::class, properties={"IsDeleted"})
  * @ApiResource(
  *      routePrefix="/admin",
  *      collectionOperations={
- *             "get_profils"={
+ *                  "get_profils"={
  *                  "method"="GET",
- *                  "path"="/profils"
- *              },
- *      }
- * )
+ *                  "path"="/profils",
+ *                  "access_control"="(is_granted('ROLE_ADMIN'))",
+ *                  "access_control_message"="Non Accèss à cette Ressource"
+ *                              },
+ *                  },
+ *      itemOperations={
+ *                   "get_profils_id"={
+ *                   "method"="GET",
+ *                   "path"="/profils/{id}"
+ *                                  },
+ *                   "put_profils_id"={
+ *                   "method"="PUT",
+ *                   "path"="/profils/{id}"
+ *                     },
+ *                   "delete_profils_id"={
+ *                   "method"="DELETE",
+ *                   "path"="/profils/{id}"
+ *                          }
+ *                  }
+ *      )
  */
+
 class Profil
 {
     /**
@@ -40,6 +61,11 @@ class Profil
      * @ApiSubresource()
      */
     private $yes;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $IsDeleted;
 
     public function __construct()
     {
@@ -89,6 +115,18 @@ class Profil
                 $ye->setProfil(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsDeleted(): ?bool
+    {
+        return $this->IsDeleted;
+    }
+
+    public function setIsDeleted(bool $IsDeleted): self
+    {
+        $this->IsDeleted = $IsDeleted;
 
         return $this;
     }

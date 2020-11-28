@@ -17,6 +17,6 @@ class Admin extends User
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    
+    private $id;
 
 }
